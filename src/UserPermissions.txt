@@ -1,0 +1,150 @@
+import React, { Component } from 'react';
+import axios from 'axios';
+
+class UserPermissions extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = ({
+            emp: [],
+            addrecords: false,
+            personName: '',
+            emailId:'',
+            userType:''
+
+        })
+        this.addRecords = this.addRecords.bind(this);
+        this.addUserAccess = this.addUserAccess.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(event) {
+        
+        this.setState({ [event.target.name]: event.target.value });
+    }
+
+    addRecords() {
+        this.setState({
+            addrecords: true
+        })
+    }
+    addUserAccess() {
+
+        alert(this.state.personName);
+        
+        axios.post('https://localhost:44314/api/usersList', {
+            personName: this.state.personName,
+            personEmail: this.state.personEmail,
+            userType: this.state.userType
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+
+        fetch('https://localhost:44314/api/usersList', {
+            method: 'post',
+            body: "title='test@gmail.com'&isAdmin=false"
+
+
+        }).then(function (response) {
+            
+            alert(response);
+            return response.json();
+        }).then(function (data) {
+            alert(data.html_url);
+        });
+    }
+
+
+
+
+    componentDidMount() {
+        axios.get('http://dummy.restapiexample.com/api/v1/employees')
+        .then(function (response) {
+          // handle success
+          alert(JSON.stringify(response));
+        })
+        .catch(function (error) {
+          // handle error
+          alert(error);
+        })
+        .finally(function () {
+          // always executed
+        });
+        var url = 'https://localhost:44314/api/usersList';
+
+        fetch(url)
+            .then(function (response) {
+                if (response.status >= 400) {
+                    throw new Error("Bad response from server");
+                }
+                return response.json();
+            })
+            .then((data) => {
+
+                this.setState({ emp: data.userList });
+            });
+
+
+
+
+    }
+
+    render() {
+        
+
+        return (
+            <div className="Content-57">
+                <div style={{ margin: '2 %', padding: '2%' }}>
+                    <div> <button onClick={this.addRecords}> ADD User </button> </div>
+
+                    {this.state.addrecords === true && (
+                        <div className="form" >
+                            <form id="formA" method="post">
+                                <table>
+                                    <tr style={{ height: '10px' }}>&nbsp;</tr>
+                                    <tr>
+                                        <td ><input type='text' name='personName' 
+                                        value={this.state.personName} onChange={this.handleChange} 
+                                        placeholder='Enter the Name' style={{ marginRight: '10px' }} /> </td>
+                                        <td><input type='text' name='personEmail' 
+                                        value={this.state.personEmail} onChange={this.handleChange}
+                                        placeholder='Enter the EmailID' style={{ marginRight: '10px' }} /> </td>
+                                        <td><input type='radio' name='userType'   placeholder='admin' 
+                                          onChange={this.handleChange}
+                                        style={{ marginRight: '10px' }} value='admin' />Admin
+                                        <input type='radio' name='userType' value='user'  
+                                        placeholder='user' 
+                                         onChange={this.handleChange}
+                                        style={{ marginRight: '10px' }} /> User </td>
+                                        <td><input type='button' value='submit' onClick={this.addUserAccess} style={{ marginLeft: '20px' }} /> </td>
+                                    </tr>
+                                </table>
+                            </form>
+                            <hr />
+
+                        </div>
+                    )}
+                </div>
+
+                <div style={{ margin: '2 %', padding: '2%' }}>
+                    
+                          personName  {this.state.personName} <br/ >
+                          personEmail  {this.state.personEmail} <br/ >
+                          userType  {this.state.userType} <br/ >
+
+                </div>
+
+
+
+            </div>
+        );
+    }
+}
+
+export default UserPermissions;
+//# sourceMappingURL=UserPermissions.js.map
